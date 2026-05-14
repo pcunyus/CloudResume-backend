@@ -77,7 +77,7 @@ def counter(req: func.HttpRequest) -> func.HttpResponse:
     except Exception as e:
         logging.error("Counter function error: %s", str(e))
         return func.HttpResponse(
-            body=json.dumps({"error": str(e)}),
+            body=json.dumps({"error": "Internal server error"}),
             status_code=500,
             mimetype="application/json",
         )

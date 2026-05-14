@@ -26,32 +26,8 @@ jobs:
       - name: Run tests
         run: pytest tests/ -v
 
-  deploy-infra:
-    needs: test
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Azure Login
-        uses: azure/login@v2
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-      - name: Deploy ARM template
-        uses: azure/CLI@v2
-        with:
-          inlineScript: |
-            az deployment group create \
-              --resource-group ${{ secrets.AZURE_RG }} \
-              --template-file infra/main.json \
-              --parameters \
-                cosmosAccountName=${{ secrets.COSMOS_ACCOUNT_NAME }} \
-                functionAppName=${{ secrets.AZURE_FUNCTIONAPP_NAME }} \
-                storageAccountName=${{ secrets.AZURE_BACKEND_STORAGE_NAME }}
-
   deploy-function:
-    needs: deploy-infra
+    needs: test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
